@@ -1,139 +1,21 @@
-# search_lib
+# Projeto de Inteligência Artificial desenvolvido para a disciplina de Inteligência Artificial do curso de Ciências da Computação da UFRPE- Busca Clássica (Opção C)
 
-Biblioteca desenvolvida para implementação e experimentação de algoritmos de busca em espaços de estados.
+Este projeto implementa e valida uma série de problemas clássicos de Inteligência Artificial utilizando a biblioteca de busca base fornecida (`search_lib`, disponível [neste repositório do GitHub](https://github.com/GustavoFelipeM/search_lib)). O objetivo é garantir a robustez e a corretude das estratégias de busca através de testes automatizados e estruturados.
 
-A `search_lib` fornece uma arquitetura modular para representar problemas, estados, ações e estratégias de busca. A estrutura permite adicionar novos problemas e algoritmos sem modificar o núcleo da biblioteca.
+## Problemas Implementados
+Foram modeladas as classes abstratas `State`, `Action` e `Problem` para 3 cenários distintos:
+1. **Sliding Puzzle (Quebra-cabeça Deslizante):** Suporte a tabuleiros dinâmicos (3x3, 4x4, etc).
+2. **Navegação de Robô em Grid:** Movimentos relativos (girar, avançar) com validação de limites de mapa.
+3. **N-Rainhas (N-Queens):** Colocação sequencial com validação de ataques (linha e diagonal).
 
-## Equipe
+## Tecnologias e Estrutura
+- **Linguagem:** Python 3.12+ (com Anotações de Tipo).
+- **Testes:** Framework `pytest`.
+- **Estratégias de Busca Testadas:** `BFS` (Busca em Largura) e `DFS` (Busca em Profundidade).
 
-* **Gustavo Felipe**
-* **Lucas Carvalho**
-* **Cauan Abraão**
+## Como executar os testes
+A bateria de testes foi construída para cobrir os "caminhos felizes" (encontrar soluções ótimas) e "casos de falha/limite" (como bater nas paredes do grid e evitar movimentos inválidos).
 
-## Sobre o projeto
-
-A biblioteca foi projetada para separar a representação de um problema da estratégia utilizada para solucioná-lo.
-
-A arquitetura principal é composta por:
-
-```text
-Problem
-├── State
-├── Action
-└── SearchStrategy
-    └── SearchNode
-```
-
-Essa separação permite que diferentes problemas sejam executados utilizando diferentes algoritmos de busca.
-
-## Componentes principais
-
-| Componente       | Responsabilidade                                                       |
-| ---------------- | ---------------------------------------------------------------------- |
-| `State`          | Representa uma configuração ou estado do problema.                     |
-| `Action`         | Representa uma transformação entre estados.                            |
-| `Problem`        | Define as regras do problema, suas ações, objetivo e heurística.       |
-| `SearchNode`     | Representa um nó durante a busca e mantém o estado, pai, ação e custo. |
-| `SearchStrategy` | Define a estrutura base para os algoritmos de busca.                   |
-
-## `State`
-
-Representa uma configuração do problema.
-
-Um estado deve permitir **comparação e hash**, pois pode ser utilizado em estruturas como `set` e `dict`. Sempre que possível, sua representação interna deve utilizar estruturas imutáveis, como `tuple` ou `frozenset`.
-
-## `Action`
-
-Representa uma ação capaz de transformar um estado em outro.
-
-O método `apply(state)` deve:
-
-* receber o estado atual;
-* retornar o novo estado quando a ação for válida;
-* retornar `None` quando a ação não puder ser aplicada.
-
-Ações não devem alterar diretamente o estado recebido.
-
-## `Problem`
-
-Representa as regras e características do problema de busca.
-
-Toda implementação deve fornecer:
-
-* `actions(state)` — retorna as ações válidas para o estado;
-* `is_goal(state)` — verifica se o estado é um estado objetivo;
-* `heuristic(state)` — fornece uma estimativa do custo restante, quando aplicável.
-
-A classe `Problem` deve representar as regras do problema e não controlar o estado da busca. Informações como estados visitados devem ser responsabilidade da estratégia de busca.
-
-## `SearchNode`
-
-Representa um nó gerado durante a busca.
-
-Cada nó mantém:
-
-| Atributo | Responsabilidade                    |
-| -------- | ----------------------------------- |
-| `state`  | Estado representado pelo nó.        |
-| `parent` | Nó que gerou o estado atual.        |
-| `action` | Ação utilizada para gerar o nó.     |
-| `cost`   | Custo acumulado desde o nó inicial. |
-
-A relação entre `parent` e os nós permite reconstruir o caminho encontrado pela busca.
-
-## `SearchStrategy`
-
-Classe base para implementação dos algoritmos de busca.
-
-Novos algoritmos devem estender `SearchStrategy` e utilizar a interface fornecida pelo núcleo da biblioteca.
-
-Podem ser implementadas estratégias como:
-
-* Busca em Largura (BFS);
-* Busca em Profundidade (DFS);
-* Busca de Custo Uniforme;
-* Busca Gulosa;
-* A*;
-* IDA*;
-* RBFS;
-* Busca Bidirecional;
-* Graph Search.
-
-A estratégia de busca é responsável pelo controle da fronteira, dos estados explorados e das características específicas do algoritmo.
-
-
-## Métricas
-
-Estratégias utilizadas em experimentos podem coletar métricas para análise de desempenho, como:
-
-| Métrica             | Descrição                              |
-| ------------------- | -------------------------------------- |
-| `nodes_expanded`    | Quantidade de nós expandidos.          |
-| `max_frontier_size` | Maior tamanho atingido pela fronteira. |
-| `execution_time`    | Tempo de execução do algoritmo.        |
-| `cost`              | Custo da solução encontrada.           |
-
-As métricas devem ser mantidas separadas da representação do problema.
-
-## Adição de novos problemas
-
-A implementação de um novo problema deve seguir a estrutura:
-
-1. Criar uma implementação de `State` para representar suas configurações.
-2. Criar as `Action` necessárias para representar suas transições.
-3. Criar uma implementação de `Problem` contendo suas regras.
-4. Implementar `actions()`, `is_goal()` e `heuristic()` quando aplicável.
-5. Validar o problema utilizando uma ou mais implementações de `SearchStrategy`.
-
-O novo problema deve ser compatível com as abstrações existentes, sem exigir alterações no núcleo da biblioteca.
-
-## Boas práticas
-
-* Estados utilizados em estruturas de busca devem possuir igualdade e hash consistentes.
-* Prefira representações imutáveis para os estados.
-* `Action.apply()` deve retornar `None` para ações inválidas.
-* Ações não devem modificar diretamente o estado recebido.
-* `Problem` não deve controlar estados visitados ou informações específicas da execução da busca.
-* `actions(state)` deve ser determinístico para um mesmo estado, quando a natureza do problema permitir.
-* A lógica do problema, o algoritmo de busca, as métricas e a visualização devem permanecer separados.
-* Novas implementações devem utilizar as abstrações existentes em vez de duplicar funcionalidades do núcleo.
+Na raiz do projeto, com o ambiente virtual ativado, execute:
+```bash
+python3 -m pytest testes/
