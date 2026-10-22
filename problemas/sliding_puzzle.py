@@ -65,6 +65,7 @@ class SlidingPuzzle(Problem):
         ]
 
     def start_state(self) -> State:
+        """Atalho para o atributo initial_state (o mesmo nome usado nos exemplos da search_lib)."""
         return self.initial_state
 
     def is_goal(self, state: SlidingPuzzleState) -> bool:

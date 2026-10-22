@@ -37,10 +37,11 @@ class PutQueenAction(Action):
 class NQueensProblem(Problem):
     def __init__(self, n: int = 8):
         self.n = n
-        self.estado_inicial = NQueensState((), n) # Começa com tabuleiro vazio
+        self.initial_state = NQueensState((), n) # Começa com tabuleiro vazio
 
     def start_state(self) -> State:
-        return self.estado_inicial
+        """Atalho para o atributo initial_state (o mesmo nome usado nos exemplos da search_lib)."""
+        return self.initial_state
 
     def is_goal(self, state: NQueensState) -> bool:
         # O objetivo é ter colocado as N rainhas com sucesso

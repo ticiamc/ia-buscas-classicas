@@ -37,3 +37,21 @@ def test_robo_na_borda_nao_cai():
     from problemas.robo_grid import MoverFrenteAction
     for acao in acoes:
         assert not isinstance(acao, MoverFrenteAction)
+
+def test_mover_frente_fora_do_grid_retorna_none():
+    """A própria ação recusa o movimento que tira o robô do grid."""
+    from problemas.robo_grid import MoverFrenteAction
+    acao = MoverFrenteAction(limites=(3, 3))
+
+    assert acao.apply(RoboState(2, 2, 'N')) is None
+    assert acao.apply(RoboState(0, 0, 'O')) is None
+    assert acao.apply(RoboState(1, 1, 'N')) == (RoboState(1, 2, 'N'), 1.0)
+
+
+def test_solucao_robo_bfs_caminho_minimo():
+    """De (0,0) virado para o Norte até (1,1): avançar, girar e avançar."""
+    problema = RoboGridProblem((0, 0, 'N'), (1, 1), (3, 3))
+    resultado = BFS(problema).search(problema.start_state())
+
+    assert resultado.solution_node is not None
+    assert resultado.solution_node.depth == 3

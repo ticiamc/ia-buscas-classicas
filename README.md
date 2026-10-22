@@ -11,7 +11,8 @@ Foram modeladas as classes abstratas `State`, `Action` e `Problem` para 3 cenár
 ## Tecnologias e Estrutura
 - **Linguagem:** Python 3.12+ (com Anotações de Tipo).
 - **Testes:** Framework `pytest`.
-- **Estratégias de Busca Testadas:** `BFS` (Busca em Largura) e `DFS` (Busca em Profundidade).
+- **Estratégias de Busca Testadas:** `BFS` (Busca em Largura), `DFS` (Busca em Profundidade) e `DLS` (Busca em Profundidade Limitada).
+  - Os algoritmos da `search_lib` são buscas em árvore (não guardam estados visitados). Por isso, nos problemas com ciclos (Sliding Puzzle e Robô), o DFS puro pode entrar em loop; nesses casos os testes usam `BFS` ou `DLS`. O `DFS` é usado nas N-Rainhas, cuja árvore tem profundidade máxima N.
 
 ## Como executar os testes
 A bateria de testes foi construída para cobrir os "caminhos felizes" (encontrar soluções ótimas) e "casos de falha/limite" (como bater nas paredes do grid e evitar movimentos inválidos).
